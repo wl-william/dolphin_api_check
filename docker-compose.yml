@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  check-dolphin:
+    build: .
+    container_name: check-dolphin
+    restart: unless-stopped
+
+    # 环境变量配置
+    environment:
+      # DolphinScheduler 配置
+      DOLPHIN_BASE_URL: ${DOLPHIN_BASE_URL:-http://localhost:12345/dolphinscheduler}
+      DOLPHIN_TOKEN: ${DOLPHIN_TOKEN}
+      DOLPHIN_TIMEOUT: ${DOLPHIN_TIMEOUT:-30}
+
+      # 监控配置
+      MAX_RETRY_COUNT: ${MAX_RETRY_COUNT:-3}
+      RETRY_INTERVAL: ${RETRY_INTERVAL:-60}
+      CHECK_INTERVAL: ${CHECK_INTERVAL:-300}
+      CONTINUOUS_MONITOR: ${CONTINUOUS_MONITOR:-true}
+
+      # 项目配置
+      PROJECT_CODES: ${PROJECT_CODES}
+
+      # 日志配置
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LOG_FILE: ${LOG_FILE:-/app/logs/check_dolphin.log}
+
+    # 挂载卷
+    volumes:
+      # 配置文件（可选）
+      - ./config.yaml:/app/config/config.yaml:ro
+      # 日志目录
+      - ./logs:/app/logs
+
+    # 命令（使用配置文件或环境变量）
+    command: >
+      check-dolphin
+      ${CONFIG_FILE:+-c /app/config/config.yaml}
+      monitor
+      --continuous
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "check-dolphin"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # 网络模式（如果 DolphinScheduler 也在 Docker 中）
+    # network_mode: "host"
+    # 或者使用自定义网络
+    networks:
+      - dolphin-network
+
+networks:
+  dolphin-network:
+    driver: bridge

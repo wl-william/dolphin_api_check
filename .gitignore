@@ -37,9 +37,11 @@ env/
 config.yaml
 config.yml
 config.json
+!config.example.yaml
 
 # Logs
 *.log
+logs/
 
 # OS
 .DS_Store

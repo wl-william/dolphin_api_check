@@ -16,9 +16,83 @@ DolphinScheduler 工作流状态监测和失败重试工具
 - ✅ 灵活的配置管理（环境变量、配置文件）
 - ✅ 详细的日志记录
 
-## 安装
+## 🚀 快速开始
 
-### 方法 1: 从源码安装
+### 选择部署方式
+
+我们提供多种部署方式，选择最适合你的：
+
+| 方式 | 难度 | 推荐场景 | 文档 |
+|------|------|----------|------|
+| **Docker Compose** | ⭐ 最简单 | 生产环境 | [查看详情](#docker-compose-部署推荐) |
+| **一键安装脚本** | ⭐⭐ | Linux 服务器 | [查看详情](#一键安装) |
+| **Systemd 服务** | ⭐⭐⭐ | Linux 服务器 | [查看详情](DEPLOYMENT.md#方式三systemd-服务) |
+| **手动安装** | ⭐⭐⭐ | 开发/测试 | [查看详情](#手动安装) |
+
+📖 **完整部署文档**: [DEPLOYMENT.md](DEPLOYMENT.md)
+
+---
+
+### Docker Compose 部署（推荐）
+
+**只需 3 步即可运行！**
+
+#### 1. 创建配置文件
+
+```bash
+# 复制示例配置
+cp .env.example .env
+
+# 编辑配置（填入你的 DolphinScheduler 信息）
+nano .env
+```
+
+#### 2. 启动服务
+
+```bash
+docker-compose up -d
+```
+
+#### 3. 查看日志
+
+```bash
+docker-compose logs -f
+```
+
+**完成！** 服务已在后台运行，持续监控你的工作流。
+
+详细说明: [Docker 部署文档](DEPLOYMENT.md#方式一docker-compose推荐)
+
+---
+
+### 一键安装
+
+**适用于 Linux 服务器，自动完成所有安装步骤**
+
+```bash
+# 下载项目
+git clone https://github.com/yourusername/check_dolphin.git
+cd check_dolphin
+
+# 运行安装脚本
+sudo bash install.sh
+
+# 编辑配置
+sudo nano /opt/check_dolphin/.env
+
+# 启动服务（如果安装为 systemd 服务）
+sudo systemctl start check-dolphin
+```
+
+详细说明: [一键安装文档](DEPLOYMENT.md#方式二一键安装脚本)
+
+---
+
+### 手动安装
+
+**适用于开发和测试环境**
+
+#### 方法 1: 从源码安装
 
 ```bash
 # 克隆项目
@@ -37,13 +111,15 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-### 方法 2: 直接安装
+#### 方法 2: 直接安装
 
 ```bash
 pip install -e .
 ```
 
-## 配置
+---
+
+## ⚙️ 配置
 
 ### 方法 1: 使用环境变量
 
@@ -330,7 +406,7 @@ INFO - Cannot retry workflow 67890: Some tasks have not exhausted their retry at
 WARNING - Skip retry for workflow my_workflow (ID: 67890): Some tasks have not exhausted their retry attempts
 ```
 
-## 项目结构
+## 📁 项目结构
 
 ```
 check_dolphin/
@@ -342,11 +418,19 @@ check_dolphin/
 │       ├── config.py            # 配置管理
 │       └── cli.py               # 命令行接口
 ├── tests/                       # 测试文件
-├── requirements.txt             # 依赖列表
-├── setup.py                     # 安装脚本
+│   ├── __init__.py
+│   └── test_api_client.py
+├── Dockerfile                   # Docker 镜像构建文件
+├── docker-compose.yml           # Docker Compose 配置
+├── install.sh                   # 一键安装脚本
+├── check-dolphin.service        # Systemd 服务文件
+├── requirements.txt             # Python 依赖列表
+├── setup.py                     # Python 安装脚本
 ├── .env.example                 # 环境变量示例
 ├── .gitignore                   # Git 忽略文件
-└── README.md                    # 项目说明
+├── README.md                    # 项目说明
+├── QUICKSTART.md                # 5分钟快速开始
+└── DEPLOYMENT.md                # 完整部署文档
 ```
 
 ## 核心模块说明

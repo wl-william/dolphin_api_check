@@ -1,0 +1,42 @@
+[Unit]
+Description=DolphinScheduler Workflow Monitor and Retry Service
+Documentation=https://github.com/yourusername/check_dolphin
+After=network.target
+
+[Service]
+Type=simple
+
+# 用户和工作目录（需要修改）
+User=YOUR_USERNAME
+Group=YOUR_GROUP
+WorkingDirectory=/path/to/check_dolphin
+
+# 环境变量
+Environment="PATH=/path/to/check_dolphin/venv/bin:/usr/local/bin:/usr/bin:/bin"
+
+# 从环境文件加载配置
+EnvironmentFile=-/path/to/check_dolphin/.env
+
+# 启动命令
+# 方式1: 使用环境变量配置
+ExecStart=/path/to/check_dolphin/venv/bin/check-dolphin monitor --continuous
+
+# 方式2: 使用配置文件（取消注释以使用）
+# ExecStart=/path/to/check_dolphin/venv/bin/check-dolphin -c /path/to/check_dolphin/config.yaml monitor --continuous
+
+# 重启策略
+Restart=always
+RestartSec=10
+
+# 日志
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=check-dolphin
+
+# 安全加固
+NoNewPrivileges=true
+PrivateTmp=true
+ReadOnlyPaths=/etc /usr
+
+[Install]
+WantedBy=multi-user.target
